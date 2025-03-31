@@ -1,0 +1,2 @@
+well position: extraction_well_position
+pattern: group

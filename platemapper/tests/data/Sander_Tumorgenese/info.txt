@@ -1,0 +1,2 @@
+well position: well_id
+pattern: control_type, i7_index_id

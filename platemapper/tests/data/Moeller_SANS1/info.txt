@@ -1,0 +1,2 @@
+well position: well_id
+pattern: host_subject_id, host_dna_rna_shield, time_point
