@@ -20,11 +20,10 @@ def ordinationBuild(df2):
     name. Replaced by letting the user rename the column hehe.
     """
 
-    werte = ["A1", "A2"] # Das hier muss noch unbedingt mit regex gemacht werden für den wahrscheinlichen fall dass auf der 
-    #plate die ersten beiden wells nicht benutzt werden.
+    werte = ["A1", "A2"] # should be made in regex if first 2 wells arent populated, however this will get nuked
 
 
-    # Passende Spalte finden und umbenennen
+    # find column and rename 
     if "well_id" not in df2.columns:
         for spalte in df2.columns:
             if all(wert in df2[spalte].values for wert in werte):
@@ -32,9 +31,9 @@ def ordinationBuild(df2):
                 df2 = df2.rename(columns={"spalte": "well_id"})
     else:
         1
-    # Andernfalls eine variable mit den wellids erstellen und damit weiterarbeiten
+    # or create well_id column and paste values there
 
-    # testing: nachschauen ob es geklappt hat
+    # testing: see if it worked (legacy)
     if "well_id" in df2.columns:
         1
 
@@ -83,7 +82,7 @@ def ordinationBuild(df2):
     df2["x"] = df2["y"].astype(float)
     df2["y"] = temp.astype(float)
 
-    #finalen dataframe erstellen aus welchem auch die ordination am ende entsteht
+    #create final dataframe for Ordination
     samples = pd.DataFrame(
         data=df2[["x", "y"]].values,
         index=df2["sample_name"],
@@ -109,12 +108,12 @@ def ordinationBuild(df2):
         eigvals,
         samples,
         proportion_explained = proportion_explained
-        # fun fact wenn man proportion_explained im selben stil 
-        # wie samples & eigvals schreibt sprengt das komplett die Ordiantion
-        # ist wichitg, da normalerweise noch werte zwischen 
-        # samples und proportion_explained existieren, die sind aber irrelevant
     )
-
+    """
+    fun fact if proportion explained wont be written the way it does it nukes
+    the Ordination, because i am not giving all arguments to the ordination function as
+    i dont need it here (there are more arguments between samples and proportion_explained).
+    """
     with open("ordination.txt", "w") as f:
 
         ordination.write(f, format="ordination")
