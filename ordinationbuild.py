@@ -36,7 +36,6 @@ def ordinationBuild(df2):
 
     # testing: nachschauen ob es geklappt hat
     if "well_id" in df2.columns:
-        #print("ja")
         1
 
 
@@ -47,9 +46,7 @@ def ordinationBuild(df2):
     x = 0
     for val in df2["well_id"].values:
         x += 1
-        if type(val) is not str:
-            # NaN ist n float
-            #print(df2.sample_name.values[x-1])
+        if type(val) is not str: # NaN is float
             df2 = df2.drop(x - 1)
 
     """
