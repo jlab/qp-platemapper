@@ -5,12 +5,18 @@ from tkinter import filedialog
 
 """
 Use tkinter to choose a file conveniently from a file Explorer,
-then insert into a dataframe(df2)
+then insert into a dataframe(datafr)
 """
-tkinter.Tk().withdraw()
-folder_path = filedialog.askopenfile()
 
-datafr = pd.read_csv(folder_path, sep='\t')
+
+def load_file():
+    tkinter.Tk().withdraw()
+    folder_path = filedialog.askopenfilename(filetypes=[("TSV files", "*.tsv")])
+    datafr = pd.read_csv(folder_path, sep='\t')
+    if not folder_path:
+        print("ERROR")
+    else:
+        return datafr
 
 def ordinationBuild(df2):
     """
@@ -20,22 +26,10 @@ def ordinationBuild(df2):
     name. Replaced by letting the user rename the column hehe.
     """
 
-    werte = ["A1", "A2"] # should be made in regex if first 2 wells arent populated, however this will get nuked
-
-
-    # find column and rename 
-    if "well_id" not in df2.columns:
-        for spalte in df2.columns:
-            if all(wert in df2[spalte].values for wert in werte):
-                print(f"beide Werte in spalte: {spalte}")
-                df2 = df2.rename(columns={"spalte": "well_id"})
-    else:
-        1
-    # or create well_id column and paste values there
-
-    # testing: see if it worked (legacy)
     if "well_id" in df2.columns:
         1
+    else:
+        print("ERROR: Columnn name well_id not found in Metafile. Please rename the fitting Column to well_id.")
 
 
     """
@@ -125,4 +119,9 @@ def ordinationBuild(df2):
     while in a conda qiime environment
     """
 
-ordinationBuild(datafr)
+
+df = load_file()
+ordinationBuild(df)
+"""
+for terminal: conda activate qiime2-amplicon-2024.10
+"""
