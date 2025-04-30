@@ -2,6 +2,7 @@ import pandas as pd
 from skbio.stats.ordination import OrdinationResults
 import tkinter
 from tkinter import filedialog
+import os
 
 """
 Use tkinter to choose a file conveniently from a file Explorer,
@@ -34,7 +35,7 @@ def filter_cols(dictdataframe):
     return df_dict
 
 def conv_dict(df1, i):
-#maybe fusing filter_cols and conv_dict together, lets see
+    #maybe fusing filter_cols and conv_dict together, lets see
     for key, df in df1.items():
         if "plate_id" in df.columns:
             df.drop(columns=["plate_id"], inplace=True)
@@ -50,8 +51,6 @@ def ordinationBuild(df2):
     contains well_id values, then rename the column in case they choose another
     name. Replaced by letting the user rename the column hehe.
     """
-
-    
 
     if "well_id" in df2.columns:
         1
@@ -139,7 +138,7 @@ def ordinationBuild(df2):
     i dont need it here (there are more arguments between samples and proportion_explained).
     """
    
-    with open(f"ordination{i}.txt", "w") as f:
+    with open(f"{output_ordin}/ordination{i}.txt", "w") as f:
 
         ordination.write(f, format="ordination")# has to be written in  a way that outputs multiple ordination.txt files
         
@@ -155,9 +154,14 @@ df = load_file()
 filtered_plates = filter_cols(df)
 
 
+
+output_ordin = "output/ordination_files"
+os.makedirs(output_ordin, exist_ok=True)
+
 for i in filtered_plates:
     df1 = conv_dict(filtered_plates, i)
     ordinationBuild(df1)
+
 
 """
 for terminal: conda activate qiime2-amplicon-2024.10
