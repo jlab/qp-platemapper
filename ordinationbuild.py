@@ -5,18 +5,43 @@ from tkinter import filedialog
 
 """
 Use tkinter to choose a file conveniently from a file Explorer,
-then insert into a dataframe(datafr)
+then insert into a dataframe(datafr). Will get scrapped.
 """
 
-
 def load_file():
+    
     tkinter.Tk().withdraw()
     folder_path = filedialog.askopenfilename(filetypes=[("TSV files", "*.tsv")])
     datafr = pd.read_csv(folder_path, sep='\t')
     if not folder_path:
         print("ERROR")
     else:
-        return datafr
+        0
+    return datafr
+
+def filter_cols(dictdataframe):
+    
+    
+    grouped = dictdataframe.groupby("plate_id")
+
+    df_dict = {}
+    
+    for name, group in grouped:
+        clean_name = name.replace(" ", "")  
+        df_dict[f"df_{clean_name}"] = group  
+
+        
+    return df_dict
+
+def conv_dict(df1, i):
+#maybe fusing filter_cols and conv_dict together, lets see
+    for key, df in df1.items():
+        if "plate_id" in df.columns:
+            df.drop(columns=["plate_id"], inplace=True)
+            # probably not of use since i create a clean dataframe for the ordinatio
+    
+    variabledf = df1[i]
+    return variabledf
 
 def ordinationBuild(df2):
     """
@@ -25,6 +50,8 @@ def ordinationBuild(df2):
     contains well_id values, then rename the column in case they choose another
     name. Replaced by letting the user rename the column hehe.
     """
+
+    
 
     if "well_id" in df2.columns:
         1
@@ -36,6 +63,9 @@ def ordinationBuild(df2):
     Detect, if NaN values were written into well_ids from sample_name,
     then deleting them 
     """
+    
+    
+    
     x = 0
     for val in df2["well_id"].values:
         x += 1
@@ -108,9 +138,10 @@ def ordinationBuild(df2):
     the Ordination, because i am not giving all arguments to the ordination function as
     i dont need it here (there are more arguments between samples and proportion_explained).
     """
-    with open("ordination.txt", "w") as f:
+   
+    with open(f"ordination{i}.txt", "w") as f:
 
-        ordination.write(f, format="ordination")
+        ordination.write(f, format="ordination")# has to be written in  a way that outputs multiple ordination.txt files
         
     
 
@@ -121,7 +152,13 @@ def ordinationBuild(df2):
 
 
 df = load_file()
-ordinationBuild(df)
+filtered_plates = filter_cols(df)
+
+
+for i in filtered_plates:
+    df1 = conv_dict(filtered_plates, i)
+    ordinationBuild(df1)
+
 """
 for terminal: conda activate qiime2-amplicon-2024.10
 """
