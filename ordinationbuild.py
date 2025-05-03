@@ -28,11 +28,13 @@ def filter_cols(dictdataframe):
     df_dict = {}
     
     for name, group in grouped:
-        clean_name = name.replace(" ", "")  
+        clean_name = name.replace("", "")  
         df_dict[f"df_{clean_name}"] = group  
 
         
     return df_dict
+
+
 
 def conv_dict(df1, i):
     #maybe fusing filter_cols and conv_dict together, lets see
@@ -155,7 +157,11 @@ filtered_plates = filter_cols(df)
 
 
 
+output_qza = "output/artifact_results"
+output_qzv = "output/emp_results"
 output_ordin = "output/ordination_files"
+os.makedirs(output_qza, exist_ok=True)
+os.makedirs(output_qzv, exist_ok=True)
 os.makedirs(output_ordin, exist_ok=True)
 
 for i in filtered_plates:
