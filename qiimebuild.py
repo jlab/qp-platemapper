@@ -3,50 +3,48 @@ from qiime2.plugins.emperor.visualizers import plot
 import glob
 import ordinationbuild
 
-
+# file paths for saving and loading files
 output_qza = "output/artifact_results"
 output_qzv = "output/emp_results"
 output_ordin = "output/ordination_files"
 
+# build the .qza files, needed for building emperor files
 def qzabuild():
 
-
-    
-    
+    #count: important for counting up ordaintion names, e.g ordination1.qza ordination2.qza ...
     count = 1
+    # = numbers of dataframes in the dictionary = number of plates
     for key, df in ordinationbuild.filtered_plates.items():
-        #count = 1
+        # build .qza file
         ordination = Artifact.import_data(
             "PCoAResults",
-            f"./{output_ordin}/ordination{key}.txt", #has to be made dynamic, only works for current test, would love to get the dictionary keys there 
+            f"./{output_ordin}/ordination{key}.txt",
             view_type="OrdinationFormat"
         )
         
-        # for i in str(count):
+        #save .qza file
         ordination.save(f"./{output_qza}/ordination{count}.qza")
+        #NOW count one up 
         count += 1
-        # doesnt want to jump to 
+        
 
-    # filecount = glob.glob(f"{output_qza}/*.qza")
-    # count = range(1, len(filecount+1))
-
+    
+#build .qzv file for visual output via emperor
 def empbuild():
-    filelist = glob.glob(f"{output_ordin}/ordination*.txt")# for qza
+    # listing all ordination.txt files, that way it does know how many .qzv files to produce
+    filelist = glob.glob(f"{output_ordin}/ordination*.txt")# for qza, could change it to the .qza directory
     anzahl =range(1, len(filelist)+1)
     
      
     for i in anzahl:
+        #load .qza
         empbuild = Artifact.load(f"./{output_qza}/ordination{i}.qza")
+        #load metadata file
         metadata = Metadata.load("meta_plate.tsv")
 
+        # choose pcoa, important
         vis = plot(pcoa = empbuild, metadata = metadata, ignore_missing_samples=True)
+        #save .qzv file
         vis.visualization.save(f"./{output_qzv}/emp_plot{i}.qzv")
-    
+    # no idea why
     return anzahl
-
-
-qzabuild()
-empbuild()  
-"""
-
-    """
