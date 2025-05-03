@@ -3,6 +3,7 @@ from skbio.stats.ordination import OrdinationResults
 import tkinter
 from tkinter import filedialog
 import os
+import shutil
 
 """
 Use tkinter to choose a file conveniently from a file Explorer,
@@ -12,10 +13,11 @@ then insert into a dataframe(datafr). Will get scrapped.
 def load_file():
     
     tkinter.Tk().withdraw()
-    folder_path = filedialog.askopenfilename(filetypes=[("TSV files", "*.tsv")])
+    folder_path = filedialog.askopenfilename(filetypes=[("TSV files", "*.tsv")])# choose file
     datafr = pd.read_csv(folder_path, sep='\t')
-    if not folder_path:
-        print("ERROR")
+    shutil.copyfile(folder_path, "./meta_plate.tsv")# copy metafile to current directory, really important for emperor later on
+    if not folder_path: #cheking: was a file chosen?
+        print("ERROR: incorrect folder path or filetype. Retry")
     else:
         0
     return datafr
@@ -23,11 +25,18 @@ def load_file():
 def filter_cols(dictdataframe):
     
     
-    grouped = dictdataframe.groupby("plate_id")
-
-    df_dict = {}
     
-    for name, group in grouped:
+    if "plate_id" not in dictdataframe.columns: #checking: is there a col named plate_id?
+        print("Error: no column plate_id found. Please rename fitting column to plate_id OR create a column named plate_id which contains the numbers of used plates e.g (plate1, plate2...). ")
+    else:
+        1
+        
+    grouped = dictdataframe.groupby("plate_id")# split metafile by plates
+    
+    df_dict = {}# dictionary for temporarily holding grouped plates
+    
+    for name, group in grouped:# check if plate names contain spaces, then read them into the dictionary
+        name = str(name)
         clean_name = name.replace("", "")  
         df_dict[f"df_{clean_name}"] = group  
 
@@ -36,17 +45,17 @@ def filter_cols(dictdataframe):
 
 
 
-def conv_dict(df1, i):
-    #maybe fusing filter_cols and conv_dict together, lets see
+def conv_dict(df1, i): #converting one dictoinary key into a variable because skbio does not like dataframes in dictionaries
+    
     for key, df in df1.items():
         if "plate_id" in df.columns:
             df.drop(columns=["plate_id"], inplace=True)
-            # probably not of use since i create a clean dataframe for the ordinatio
+           
     
     variabledf = df1[i]
     return variabledf
 
-def ordinationBuild(df2):
+def ordinationBuild(df2, i):
     """
     (later to be) main function
     legacy: detect, in case of column name "well_id" missing, which column 
@@ -102,7 +111,7 @@ def ordinationBuild(df2):
     And while im at it, im converting all values to floats as building the ordination
     get less stressing if the values are floats.
     """
-
+    # swap row = y and column = x into row = x and col = y  
     temp = df2["x"]
     df2["x"] = df2["y"].astype(float)
     df2["y"] = temp.astype(float)
@@ -142,12 +151,11 @@ def ordinationBuild(df2):
    
     with open(f"{output_ordin}/ordination{i}.txt", "w") as f:
 
-        ordination.write(f, format="ordination")# has to be written in  a way that outputs multiple ordination.txt files
+        ordination.write(f, format="ordination")# has to be written in  a way that outputs multiple ordination.txt files, done 
         
     
 
     """
-    Now a function, however it HAS to be activated via terminal with e.g python3 ordiantionbuild.py 
     while in a conda qiime environment
     """
 
@@ -156,17 +164,16 @@ df = load_file()
 filtered_plates = filter_cols(df)
 
 
-
+# file paths for saving
 output_qza = "output/artifact_results"
 output_qzv = "output/emp_results"
 output_ordin = "output/ordination_files"
-os.makedirs(output_qza, exist_ok=True)
-os.makedirs(output_qzv, exist_ok=True)
-os.makedirs(output_ordin, exist_ok=True)
 
-for i in filtered_plates:
-    df1 = conv_dict(filtered_plates, i)
-    ordinationBuild(df1)
+
+# now in main.py
+# for i in filtered_plates:
+#     df1 = conv_dict(filtered_plates, i)
+#     ordinationBuild(df1)
 
 
 """
