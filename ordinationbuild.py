@@ -2,7 +2,7 @@ import pandas as pd
 from skbio.stats.ordination import OrdinationResults
 import tkinter
 from tkinter import filedialog
-import os
+#import os
 import shutil
 
 """
@@ -39,7 +39,8 @@ def filter_cols(dictdataframe):
         name = str(name)
         clean_name = name.replace("", "")  
         df_dict[f"df_{clean_name}"] = group  
-
+    for name in df_dict.values():
+        print(name)
         
     return df_dict
 
@@ -73,20 +74,22 @@ def ordinationBuild(df2, i):
     Detect, if NaN values were written into well_ids from sample_name,
     then deleting them 
     """
-    
-    
+    pd.DataFrame(df2["well_id"]).to_csv("well_idcol.tsv", sep="\t")
+    print(df2["well_id"])
     
     x = 0
     for val in df2["well_id"].values:
         x += 1
         if type(val) is not str: # NaN is float
-            df2 = df2.drop(x - 1)
+            #df2 = df2.drop(df2.index[x - 1])
+            df2 = df2.drop(x - 1) #legacy solution PUT IN IF ITS STILL BROKEN
+
 
     """
     split well_ids into letter and numbers: A1 --> A 1
     """
     def well_split(s):
-        return pd.Series([s[0],s[1:]])
+        return pd.Series([str(s)[0],str(s)[1:]])# issues with werth_duftzellen 
 
     df2[["x", "y"]] = df2["well_id"].apply(well_split)
 
