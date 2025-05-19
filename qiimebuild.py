@@ -48,3 +48,5 @@ def empbuild():
         vis.visualization.save(f"./{output_qzv}/emp_plot{i}.qzv")
     # no idea why
     return anzahl
+
+# Introducing the ability to save emperor plots as .png, no need to always import them to view.qiime2
