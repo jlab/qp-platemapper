@@ -74,15 +74,16 @@ def ordinationBuild(df2, i):
     Detect, if NaN values were written into well_ids from sample_name,
     then deleting them 
     """
-    pd.DataFrame(df2["well_id"]).to_csv("well_idcol.tsv", sep="\t")
-    print(df2["well_id"])
+    pd.DataFrame(df2["well_id"]).to_csv("well_idcol.tsv", sep="\t")#??????????????????????????
+    #print(df2["well_id"])
     
     x = 0
     for val in df2["well_id"].values:
         x += 1
         if type(val) is not str: # NaN is float
             #df2 = df2.drop(df2.index[x - 1])
-            df2 = df2.drop(x - 1) #legacy solution PUT IN IF ITS STILL BROKEN
+            df2 = df2.drop(x - 1, errors="ignore") #legacy solution PUT IN IF ITS STILL BROKEN
+            # filters 1st, 2nd pate etc..., then at the end assigns all empty well ids into one class
 
 
     """
@@ -114,6 +115,12 @@ def ordinationBuild(df2, i):
     And while im at it, im converting all values to floats as building the ordination
     get less stressing if the values are floats.
     """
+    
+    
+    #testing
+    df2 = df2[pd.to_numeric(df2["y"], errors="coerce").notna()]# converts
+    #testing
+    
     # swap row = y and column = x into row = x and col = y  
     temp = df2["x"]
     df2["x"] = df2["y"].astype(float)
