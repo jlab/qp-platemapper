@@ -2,8 +2,7 @@ import pandas as pd
 from skbio.stats.ordination import OrdinationResults
 import tkinter
 from tkinter import filedialog
-#import os
-import shutil
+import shutil # for copying metafile to main folder
 
 """
 Use tkinter to choose a file conveniently from a file Explorer,
@@ -16,20 +15,23 @@ def load_file():
     folder_path = filedialog.askopenfilename(filetypes=[("TSV files", "*.tsv")])# choose file
     datafr = pd.read_csv(folder_path, sep='\t')
     shutil.copyfile(folder_path, "./meta_plate.tsv")# copy metafile to current directory, really important for emperor later on
-    if not folder_path: #cheking: was a file chosen?
-        print("ERROR: incorrect folder path or filetype. Retry")
-    else:
-        0
+    
+    
+    if not folder_path:
+        raise KeyError("Incorrect folder or filetype, or maybe no file selected?")
+    
+    
+    # if not folder_path: #cheking: was a file chosen?
+    #     print("ERROR: incorrect folder path or filetype. Retry")
+    # else:
+    #     0
     return datafr
 
 def filter_cols(dictdataframe):
     
-    
-    
-    if "plate_id" not in dictdataframe.columns: #checking: is there a col named plate_id?
-        print("Error: no column plate_id found. Please rename fitting column to plate_id OR create a column named plate_id which contains the numbers of used plates e.g (plate1, plate2...). ")
-    else:
-        1
+
+    if "plate_id" not in dictdataframe.columns:
+        raise KeyError("Column plate_id not found. Please rename fitting Column to plate_id")
         
     grouped = dictdataframe.groupby("plate_id")# split metafile by plates
     
@@ -41,8 +43,9 @@ def filter_cols(dictdataframe):
         df_dict[f"df_{clean_name}"] = group  
     for name in df_dict.values():
         print(name)
-        
+    
     return df_dict
+    
 
 
 
@@ -51,8 +54,7 @@ def conv_dict(df1, i): #converting one dictoinary key into a variable because sk
     for key, df in df1.items():
         if "plate_id" in df.columns:
             df.drop(columns=["plate_id"], inplace=True)
-           
-    
+            
     variabledf = df1[i]
     return variabledf
 
@@ -65,10 +67,7 @@ def ordinationBuild(df2, i):
     """
 
     if "well_id" in df2.columns:
-        1
-    else:
-        print("ERROR: Columnn name well_id not found in Metafile. Please rename the fitting Column to well_id.")
-
+        raise KeyError("No Column named well_id. Please rename fitting Column to well_id")
 
     """
     Detect, if NaN values were written into well_ids from sample_name,
@@ -82,15 +81,14 @@ def ordinationBuild(df2, i):
         x += 1
         if type(val) is not str: # NaN is float
             #df2 = df2.drop(df2.index[x - 1])
-            df2 = df2.drop(x - 1, errors="ignore") #legacy solution PUT IN IF ITS STILL BROKEN
-            # filters 1st, 2nd pate etc..., then at the end assigns all empty well ids into one class
-
+            df2 = df2.drop(x - 1, errors="ignore") #shit errors=ignore is important, shouldnt be that way
+            # filters 1st, 2nd plate etc...., 
 
     """
     split well_ids into letter and numbers: A1 --> A 1
     """
     def well_split(s):
-        return pd.Series([str(s)[0],str(s)[1:]])# issues with werth_duftzellen 
+        return pd.Series([str(s)[0],str(s)[1:]])
 
     df2[["x", "y"]] = df2["well_id"].apply(well_split)
 
@@ -118,7 +116,7 @@ def ordinationBuild(df2, i):
     
     
     #testing
-    df2 = df2[pd.to_numeric(df2["y"], errors="coerce").notna()]# converts
+    df2 = df2[pd.to_numeric(df2["y"], errors="coerce").notna()]# converts all wellid values into numbers, even nan values (they are still nan)
     #testing
     
     # swap row = y and column = x into row = x and col = y  
@@ -138,8 +136,8 @@ def ordinationBuild(df2, i):
     Useless in our application.
     """
 
-    eigvals = pd.Series([0.13, 0.37])
-    proportion_explained = pd.Series([0.5758, 0.4242])
+    eigvals = pd.Series([0.13, 0.37])# MADE UP VALUES
+    proportion_explained = pd.Series([0.5758, 0.4242])#MADE UP VALUES
 
     """
     Finally the ordination building. Also writing the Ordination into the
@@ -163,13 +161,6 @@ def ordinationBuild(df2, i):
 
         ordination.write(f, format="ordination")# has to be written in  a way that outputs multiple ordination.txt files, done 
         
-    
-
-    """
-    while in a conda qiime environment
-    """
-
-
 df = load_file()
 filtered_plates = filter_cols(df)
 
@@ -179,13 +170,7 @@ output_qza = "output/artifact_results"
 output_qzv = "output/emp_results"
 output_ordin = "output/ordination_files"
 
-
-# now in main.py
-# for i in filtered_plates:
-#     df1 = conv_dict(filtered_plates, i)
-#     ordinationBuild(df1)
-
-
 """
+cd ~
 for terminal: conda activate qiime2-amplicon-2024.10
 """
