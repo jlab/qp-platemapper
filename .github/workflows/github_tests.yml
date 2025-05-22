@@ -20,8 +20,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        $CONDA/bin/conda env update --file environment.yml --name base
-        $CONDA/bin/conda env create --name qiime2-amplicon-2025.4 --file https://raw.githubusercontent.com/qiime2/distributions/refs/heads/dev/2025.4/amplicon/released/qiime2-amplicon-ubuntu-latest-conda.yml
+        $CONDA/bin/conda env update --name base --file=https://raw.githubusercontent.com/qiime2/distributions/refs/heads/dev/2025.4/amplicon/released/qiime2-amplicon-ubuntu-latest-conda.yml
 
     - name: Generate Ordination Layouts
       run: |
