@@ -10,8 +10,9 @@ then insert into a dataframe(datafr). Will get scrapped.
 """
 
 def load_file():
-    
-    tkinter.Tk().withdraw()
+    window = tkinter.Tk()
+    window.minsize(1000, 1000)
+    window.withdraw()    #tkinter.Tk().withdraw()
     folder_path = filedialog.askopenfilename(filetypes=[("TSV files", "*.tsv")])# choose file
     datafr = pd.read_csv(folder_path, sep='\t')
     shutil.copyfile(folder_path, "./meta_plate.tsv")# copy metafile to current directory, really important for emperor later on
@@ -20,11 +21,7 @@ def load_file():
     if not folder_path:
         raise KeyError("Incorrect folder or filetype, or maybe no file selected?")
     
-    
-    # if not folder_path: #cheking: was a file chosen?
-    #     print("ERROR: incorrect folder path or filetype. Retry")
-    # else:
-    #     0
+    # need: after file is chosen, clean output folder
     return datafr
 
 def filter_cols(dictdataframe):
@@ -46,9 +43,6 @@ def filter_cols(dictdataframe):
     
     return df_dict
     
-
-
-
 def conv_dict(df1, i): #converting one dictoinary key into a variable because skbio does not like dataframes in dictionaries
     
     for key, df in df1.items():
@@ -66,7 +60,7 @@ def ordinationBuild(df2, i):
     name. Replaced by letting the user rename the column hehe.
     """
 
-    if "well_id" in df2.columns:
+    if "well_id" not in df2.columns:
         raise KeyError("No Column named well_id. Please rename fitting Column to well_id")
 
     """
@@ -119,7 +113,7 @@ def ordinationBuild(df2, i):
     df2 = df2[pd.to_numeric(df2["y"], errors="coerce").notna()]# converts all wellid values into numbers, even nan values (they are still nan)
     #testing
     
-    # swap row = y and column = x into row = x and col = y  
+    # swap row = y and column = x into row = x and col = y, ill maybe rename x&y to row and col later on
     temp = df2["x"]
     df2["x"] = df2["y"].astype(float)
     df2["y"] = temp.astype(float)
