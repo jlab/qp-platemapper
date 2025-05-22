@@ -1,0 +1,49 @@
+name: Integration Tests & Code Style
+
+on:
+  push:
+    branches: [ master, dev ]
+  pull_request:
+    branches: [ master, dev ]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+      with:
+          lfs: true
+    - name: Set up Python
+      uses: actions/setup-python@v2
+
+    - name: Install dependencies
+      run: |
+        $CONDA/bin/conda env update --file environment.yml --name base
+        $CONDA/bin/conda env create --name qiime2-amplicon-2025.4 --file https://raw.githubusercontent.com/qiime2/distributions/refs/heads/dev/2025.4/amplicon/released/qiime2-amplicon-ubuntu-latest-conda.yml
+
+    - name: Generate Ordination Layouts
+      run: |
+        tmpdir=`~/temp`
+        mkdir -p $tmpdir
+        cd $tmpdir && python -c 'print("Hallo")' > test.txt
+
+    # - name: Lint with flake8
+    #   run: |
+    #     $CONDA/bin/flake8 src/marbel/
+
+    - name: Archive results
+      uses: actions/upload-artifact@v4
+      with:
+        name: ordinations
+        path: ~/temp
+
+    # - name: Run tests with pytest
+    #   run: |
+    #     $CONDA/bin/pytest . --ignore=tests/test_functional.py --doctest-modules --cov=src/marbel --cov-report=lcov
+    # - name: Send coverage report to Coveralls
+    #   uses: coverallsapp/github-action@master
+    #   with:
+    #     github-token: ${{ secrets.GITHUB_TOKEN }}
+    #     path-to-lcov: "coverage.lcov"
