@@ -69,7 +69,7 @@ def ordinationBuild(df2, i):
     """
     #pd.DataFrame(df2["well_id"]).to_csv("well_idcol.tsv", sep="\t")#?????????????????????????? i think this was just for debugging purposes iirc
     #print(df2["well_id"])
-    
+    # check for same well id on same plate
     x = 0
     for val in df2["well_id"].values:
         x += 1
@@ -142,7 +142,7 @@ def ordinationBuild(df2, i):
         "Manual",
         "Parsed well ID ordination",
         eigvals,
-        samples,
+        samples, 
         proportion_explained = proportion_explained
     )
     """

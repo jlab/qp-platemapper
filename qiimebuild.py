@@ -49,4 +49,5 @@ def empbuild():
     # no idea why
     return anzahl
 
-# Introducing the ability to save emperor plots as .png, no need to always import them to view.qiime2
+# also, maybe if its okay, delete all files except for the .qzv files because .qza and ordination no longer needed.
+# Introducing the ability to save emperor plots as .png, no need to always import them to view.qiime2. thats more complex then i thought
