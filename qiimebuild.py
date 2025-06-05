@@ -1,5 +1,5 @@
-from qiime2 import Artifact, Metadata
-from qiime2.plugins.emperor.visualizers import plot
+from qiime2 import Artifact, Metadata # pyright: ignore[reportMissingImports]
+from qiime2.plugins.emperor.visualizers import plot # pyright: ignore[reportMissingImports]
 import glob
 import ordinationbuild
 

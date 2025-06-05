@@ -1,17 +1,30 @@
-import filehandler
+import testing.filehandler as filehandler
 import ordinationbuild 
 import qiimebuild
+import pandas as pd
 
 #execute everything
 
 filehandler.makefolder() 
 
-for i in ordinationbuild.filtered_plates:
-    df1 = ordinationbuild.conv_dict(ordinationbuild.filtered_plates, i)
-    ordinationbuild.ordinationBuild(df1, i)
+# for i in ordinationbuild.filtered_plates:
     
-qiimebuild.qzabuild()
-qiimebuild.empbuild()
+#     df1 = ordinationbuild.conv_dict(ordinationbuild.filtered_plates, i)
+    
+#     ordinationbuild.ordinationBuild(df1, i)
+
+for i in range(len(ordinationbuild.filtered_plates)):
+    df4 = ordinationbuild.conv_dict(ordinationbuild.filtered_plates, i)
+    samples = ordinationbuild.ordinationBuild(df4, i)
+    endplate = ordinationbuild.Combine_plate_and_spacer(samples, i)
+    
+pd.DataFrame(endplate).to_csv("iminvain.tsv", sep="\t", index=False)
+
+#ordinationbuild.ordinationBuild(endplate,i)
+    
+    
+# qiimebuild.qzabuild()
+# qiimebuild.empbuild()
 
 
 """

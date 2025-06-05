@@ -1,9 +1,12 @@
-import pandas as pd
-from skbio.stats.ordination import OrdinationResults
+import pandas as pd # pyright: ignore[reportMissingModuleSource]
+#import numpy as np
+from skbio.stats.ordination import OrdinationResults # pyright: ignore[reportMissingImports]
 import tkinter
 from tkinter import filedialog
 import shutil # for copying metafile to main folder
+import ordiantionspacer
 
+bigplate = pd.DataFrame()
 """
 Use tkinter to choose a file conveniently from a file Explorer,
 then insert into a dataframe(datafr). Will get scrapped.
@@ -41,7 +44,9 @@ def filter_cols(dictdataframe):
     for name in df_dict.values():
         print(name)
     
-    return df_dict
+    numbered_dict = {i: v for i, v in enumerate(df_dict.values())}
+    
+    return numbered_dict
     
 def conv_dict(df1, i): #converting one dictoinary key into a variable because skbio does not like dataframes in dictionaries
     
@@ -51,6 +56,19 @@ def conv_dict(df1, i): #converting one dictoinary key into a variable because sk
             
     variabledf = df1[i]
     return variabledf
+
+# hirt irgendwo dazwischen muss ich die funktion einbauen
+
+def Combine_plate_and_spacer(plates, i):
+    spacer = ordiantionspacer.Add_Spacer(i)[0]
+    bigplate = pd.DataFrame()
+    bigplate = pd.concat([bigplate, plates], ignore_index=True)
+    bigplate = pd.concat([bigplate, spacer], ignore_index=True)
+    return bigplate
+        
+        
+        
+    
 
 def ordinationBuild(df2, i):
     """
@@ -81,10 +99,10 @@ def ordinationBuild(df2, i):
     """
     split well_ids into letter and numbers: A1 --> A 1
     """
-    def well_split(s):
+    def well_split(s):# !!!! darf jetzt schon passieren
         return pd.Series([str(s)[0],str(s)[1:]])
 
-    df2[["x", "y"]] = df2["well_id"].apply(well_split)
+    df2[["row", "column"]] = df2["well_id"].apply(well_split)
 
     """
     convert letters from column x into their coordination numbers.
@@ -92,39 +110,41 @@ def ordinationBuild(df2, i):
     i could turn it around again by mirroring emperors axis, not planned yet
     """
 
-    def well_convert(wl):
+    def well_convert(wl): # !!!!!!!!!!!!!!!!! muss später erfolgen
         ch = "HGFEDCBA"
         if wl not in ch:
             return wl
         else:
             return ch.index(wl)+1
 
-    df2["x"] = df2["x"].apply(well_convert)
-
+    df2["row"] = df2["row"].apply(well_convert)
     """
     Swap the x and y axis as the values with former letters have to be on the
     y Axis, i WILL change the Axis names somethime in the Future (i promise).
     And while im at it, im converting all values to floats as building the ordination
     get less stressing if the values are floats.
     """
-    
-    
     #testing
-    df2 = df2[pd.to_numeric(df2["y"], errors="coerce").notna()]# converts all wellid values into numbers, even nan values (they are still nan)
+    df2 = df2[pd.to_numeric(df2["column"], errors="coerce").notna()]# converts all wellid values into numbers, even nan values (they are still nan)
     #testing
     
     # swap row = y and column = x into row = x and col = y, ill maybe rename x&y to row and col later on
-    temp = df2["x"]
-    df2["x"] = df2["y"].astype(float)
-    df2["y"] = temp.astype(float)
+    temp = df2["row"]
+    df2["row"] = df2["column"].astype(float)
+    df2["column"] = temp.astype(float)
 
     #create final dataframe for Ordination
     samples = pd.DataFrame(
-        data=df2[["x", "y"]].values,
+        data=df2[["row", "column"]].values,
         index=df2["sample_name"],
-        columns=["x", "y"]
+        columns=["row", "column"]
     )
+    #test
+    pd.DataFrame(samples).to_csv("test.tsv", sep="\t", index=False)
 
+    return samples
+
+def ordinationWrite(df2, i):
     """
     Ordination prep: invent Eigenvalues and proportion explained as they are
     Useless in our application.
@@ -155,8 +175,11 @@ def ordinationBuild(df2, i):
 
         ordination.write(f, format="ordination")# has to be written in  a way that outputs multiple ordination.txt files, done 
         
+
 df = load_file()
 filtered_plates = filter_cols(df)
+
+
 
 
 # file paths for saving
