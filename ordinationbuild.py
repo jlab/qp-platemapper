@@ -4,22 +4,21 @@ from skbio.stats.ordination import OrdinationResults # pyright: ignore[reportMis
 import tkinter
 from tkinter import filedialog
 import shutil # for copying metafile to main folder
-import ordiantionspacer
+
 
 
 """
 Use tkinter to choose a file conveniently from a file Explorer,
 then insert into a dataframe(datafr). Will get scrapped.
 """
-
+# will be changed for other workflow
 def load_file():
     window = tkinter.Tk()
     window.minsize(1000, 1000)
     window.withdraw()    #tkinter.Tk().withdraw()
     file_path = filedialog.askopenfilename(filetypes=[("TSV files", "*.tsv")])# choose file
     datafr = pd.read_csv(file_path, sep='\t')
-    #shutil.copyfile(file_path, "./meta_plate.tsv")# copy metafile to current directory, really important for emperor later on
-    
+    shutil.copyfile(file_path, "./meta_plate.tsv")# copy metafile to current directory, really important for emperor later on
     
     if not file_path:
         raise KeyError("Incorrect folder or filetype, or maybe no file selected?")
@@ -57,16 +56,10 @@ def conv_dict(df1, i): #converting one dictoinary key into a variable because sk
     variabledf = df1[i]
     return variabledf
 
-# hirt irgendwo dazwischen muss ich die funktion einbauen
-
-
-def Combine_plate_and_spacer(plates, spacer):
-    #print(f"Combine_plate_and_spacer called with plates of shape {plates.shape}")
+#fuse plate and spacer
+#def Combine_plate_and_spacer(plates, spacer):
+    #return pd.concat([plates, spacer], ignore_index=True)
     
-    return pd.concat([plates, spacer], ignore_index=True)
-    
-        
-
 def ordinationBuild(df2, i):
     """
     (later to be) main function
@@ -94,9 +87,8 @@ def ordinationBuild(df2, i):
     """
     split well_ids into letter and numbers: A1 --> A 1
     """
-    def well_split(s):# !!!! darf jetzt schon passieren
+    def well_split(s):
         return pd.Series([str(s)[0],str(s)[1:]])
-
     df2[["row", "column"]] = df2["well_id"].apply(well_split)
 
     """
@@ -105,7 +97,7 @@ def ordinationBuild(df2, i):
     i could turn it around again by mirroring emperors axis, not planned yet
     """
 
-    def well_convert(wl): # !!!!!!!!!!!!!!!!! muss später erfolgen
+    def well_convert(wl): 
         ch = "HGFEDCBA"
         if wl not in ch:
             return wl
@@ -113,34 +105,26 @@ def ordinationBuild(df2, i):
             return ch.index(wl)+1
     df2["row"] = df2["row"].apply(well_convert)
     
-    """
-    Swap the x and y axis as the values with former letters have to be on the
-    y Axis, i WILL change the Axis names somethime in the Future (i promise).
-    And while im at it, im converting all values to floats as building the ordination
-    get less stressing if the values are floats.
-    """
-    
-    #testing
     df2 = df2[pd.to_numeric(df2["column"], errors="coerce").notna()]# converts all wellid values into numbers, even nan values (they are still nan)
-    #testing
     
     
+    #swap row and column, has to be swapped for ordination
     temp = df2["row"]
     df2["row"] = df2["column"].astype(float)
     df2["column"] = temp.astype(float)
     
     #create 3rd dataframe, trust me on this one
-    hailmary = {"sample_name": df2["sample_name"],
+    whatever = {"sample_name": df2["sample_name"],
                 "row": df2["row"],
                 "column": df2 ["column"]}
-    df3 = pd.DataFrame(data=hailmary)
+    df3 = pd.DataFrame(data=whatever)
     return df3
 
+#build final dataframe which does the ordination
 def finalDataframeBuild(df2):
     df2["row"].astype(float)
     df2["column"].astype(float)
     
-     #create final dataframe for Ordination
     samples = pd.DataFrame(
         data=df2[["row", "column"]].values,
         index=df2["sample_name"],
@@ -149,11 +133,7 @@ def finalDataframeBuild(df2):
     return samples
 
 def ordinationWrite(samples):
-    """
-    Ordination prep: invent Eigenvalues and proportion explained as they are
-    Useless in our application.
-    """
-
+    # MAKE UP VALUES 
     eigvals = pd.Series([0.13, 0.37])# MADE UP VALUES
     proportion_explained = pd.Series([0.5758, 0.4242])#MADE UP VALUES
 
@@ -179,12 +159,8 @@ def ordinationWrite(samples):
 
         ordination.write(f, format="ordination")# has to be written in  a way that outputs multiple ordination.txt files, done 
         
-
 df = load_file()
 filtered_plates = filter_cols(df)
-
-
-
 
 # file paths for saving
 output_qza = "output/artifact_results"

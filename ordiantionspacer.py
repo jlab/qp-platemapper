@@ -1,26 +1,20 @@
 import pandas as pd # pyright: ignore[reportMissingModuleSource]
 import random
 import string
-import ordinationbuild
-#import traceback
-
+#import traceback for debugging
 
 random.seed(1337)
-
-
-
-# goal, generate a spacer ordination file and metadata file for spacing plates in one plot
 
 #create random names for spacer vals
 def generate_random_suffix(length=7):
     chars = string.ascii_lowercase + string.digits
     return ''.join(random.choices(chars, k=length))
-
+#create name
 def create_string_with_suffix(prefix='spacer', length=7):
     suffix = generate_random_suffix(length)
     return f"{prefix}_{suffix}"
 
-spacer_list = [create_string_with_suffix() for _ in range(16)]
+spacer_list = [create_string_with_suffix() for _ in range(16)] # ??????? no idea
 
 #df for spacer
 def spacer_build_parts(spacer_list, i):
@@ -41,7 +35,7 @@ def metafile_build_parts(spacer_list, i):
     offset = i*14
     column_values = [13+ offset ]*8 + [14+ offset]*8
     letters = ['H', 'G', 'F', 'E', 'D', 'C', 'B', 'A']*2
-    
+    #create df
     metaspc = {"sample_name": spacer_list,
             "column": column_values,
             "row": letters
@@ -65,11 +59,14 @@ def metafile_build_parts(spacer_list, i):
 
 
 def Add_Spacer(i):
+    #create ranomized names
     spacer_list = [create_string_with_suffix() for _ in range(16)]
 
+    #create noth dfs
     spacer_df = spacer_build_parts(spacer_list, i)
     metafile_df = metafile_build_parts(spacer_list, i)
     
+    # purely debugging
     # print(f"Iteration {i}:")
     # print("Spacer sample_names (first 5):", spacer_df["sample_name"].head().tolist())
     # print("Metafile sample_names (first 5):", metafile_df["sample_name"].head().tolist())
@@ -77,8 +74,6 @@ def Add_Spacer(i):
     # print("---")
     # print(f"Add_Spacer called with i={i}")
     # traceback.print_stack(limit=3)
-
-    
     return spacer_df, metafile_df
 
 
