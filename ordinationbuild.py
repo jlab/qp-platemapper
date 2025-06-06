@@ -6,7 +6,7 @@ from tkinter import filedialog
 import shutil # for copying metafile to main folder
 import ordiantionspacer
 
-bigplate = pd.DataFrame()
+
 """
 Use tkinter to choose a file conveniently from a file Explorer,
 then insert into a dataframe(datafr). Will get scrapped.
@@ -16,12 +16,12 @@ def load_file():
     window = tkinter.Tk()
     window.minsize(1000, 1000)
     window.withdraw()    #tkinter.Tk().withdraw()
-    folder_path = filedialog.askopenfilename(filetypes=[("TSV files", "*.tsv")])# choose file
-    datafr = pd.read_csv(folder_path, sep='\t')
-    shutil.copyfile(folder_path, "./meta_plate.tsv")# copy metafile to current directory, really important for emperor later on
+    file_path = filedialog.askopenfilename(filetypes=[("TSV files", "*.tsv")])# choose file
+    datafr = pd.read_csv(file_path, sep='\t')
+    #shutil.copyfile(file_path, "./meta_plate.tsv")# copy metafile to current directory, really important for emperor later on
     
     
-    if not folder_path:
+    if not file_path:
         raise KeyError("Incorrect folder or filetype, or maybe no file selected?")
     
     # need: after file is chosen, clean output folder
@@ -59,16 +59,13 @@ def conv_dict(df1, i): #converting one dictoinary key into a variable because sk
 
 # hirt irgendwo dazwischen muss ich die funktion einbauen
 
-def Combine_plate_and_spacer(plates, i):
-    spacer = ordiantionspacer.Add_Spacer(i)[0]
-    bigplate = pd.DataFrame()
-    bigplate = pd.concat([bigplate, plates], ignore_index=True)
-    bigplate = pd.concat([bigplate, spacer], ignore_index=True)
-    return bigplate
-        
-        
-        
+
+def Combine_plate_and_spacer(plates, spacer):
+    #print(f"Combine_plate_and_spacer called with plates of shape {plates.shape}")
     
+    return pd.concat([plates, spacer], ignore_index=True)
+    
+        
 
 def ordinationBuild(df2, i):
     """
@@ -85,8 +82,6 @@ def ordinationBuild(df2, i):
     Detect, if NaN values were written into well_ids from sample_name,
     then deleting them 
     """
-    #pd.DataFrame(df2["well_id"]).to_csv("well_idcol.tsv", sep="\t")#?????????????????????????? i think this was just for debugging purposes iirc
-    #print(df2["well_id"])
     # check for same well id on same plate
     x = 0
     for val in df2["well_id"].values:
@@ -116,35 +111,44 @@ def ordinationBuild(df2, i):
             return wl
         else:
             return ch.index(wl)+1
-
     df2["row"] = df2["row"].apply(well_convert)
+    
     """
     Swap the x and y axis as the values with former letters have to be on the
     y Axis, i WILL change the Axis names somethime in the Future (i promise).
     And while im at it, im converting all values to floats as building the ordination
     get less stressing if the values are floats.
     """
+    
     #testing
     df2 = df2[pd.to_numeric(df2["column"], errors="coerce").notna()]# converts all wellid values into numbers, even nan values (they are still nan)
     #testing
     
-    # swap row = y and column = x into row = x and col = y, ill maybe rename x&y to row and col later on
+    
     temp = df2["row"]
     df2["row"] = df2["column"].astype(float)
     df2["column"] = temp.astype(float)
+    
+    #create 3rd dataframe, trust me on this one
+    hailmary = {"sample_name": df2["sample_name"],
+                "row": df2["row"],
+                "column": df2 ["column"]}
+    df3 = pd.DataFrame(data=hailmary)
+    return df3
 
-    #create final dataframe for Ordination
+def finalDataframeBuild(df2):
+    df2["row"].astype(float)
+    df2["column"].astype(float)
+    
+     #create final dataframe for Ordination
     samples = pd.DataFrame(
         data=df2[["row", "column"]].values,
         index=df2["sample_name"],
         columns=["row", "column"]
     )
-    #test
-    pd.DataFrame(samples).to_csv("test.tsv", sep="\t", index=False)
-
     return samples
 
-def ordinationWrite(df2, i):
+def ordinationWrite(samples):
     """
     Ordination prep: invent Eigenvalues and proportion explained as they are
     Useless in our application.
@@ -171,7 +175,7 @@ def ordinationWrite(df2, i):
     i dont need it here (there are more arguments between samples and proportion_explained).
     """
    
-    with open(f"{output_ordin}/ordination{i}.txt", "w") as f:
+    with open(f"{output_ordin}/ordination.txt", "w") as f:
 
         ordination.write(f, format="ordination")# has to be written in  a way that outputs multiple ordination.txt files, done 
         
