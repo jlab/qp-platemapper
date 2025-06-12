@@ -1,8 +1,12 @@
 import testing.filehandler as filehandler
 import ordinationbuild 
-import ordiantionspacer
 import qiimebuild
 import pandas as pd # pyright: ignore[reportMissingModuleSource]
+import tkinter
+from tkinter import filedialog
+import shutil
+import os
+
 
 #execute everything
 
@@ -14,26 +18,47 @@ endplate = None
 metaspacer = None
 
 
-for i in range(len(ordinationbuild.filtered_plates)):
+def load_file():
+    window = tkinter.Tk()
+    window.minsize(1000, 1000)
+    window.withdraw()    #tkinter.Tk().withdraw()
+    file_path = filedialog.askopenfilename(parent= window, 
+                                           filetypes=[("TSV files", "*.tsv")],
+                                           title= "choose file:")# choose file
+    
+    window.destroy()
+    
+    datafr = pd.read_csv(file_path, sep='\t')
+    shutil.copyfile(file_path, "./meta_plate.tsv")# copy metafile to current directory, really important for emperor later on
+    
+    if not file_path:
+        raise KeyError("Incorrect folder or filetype, or maybe no file selected?")
+    
+    # need: after file is chosen, clean output folder
+    return datafr, file_path
+
+
+df, filepath = load_file()
+filtered_plates = ordinationbuild.filter_cols(df)
+
+
+file_dir = os.path.dirname(filepath)
+folder_name = os.path.basename(file_dir)
+
+
+
+
+for i in range(len(filtered_plates)):
     # get single plate as variable out of dictionary
-    df4 = ordinationbuild.conv_dict(ordinationbuild.filtered_plates, i)
+    df4 = ordinationbuild.conv_dict(filtered_plates, i)
     #edit plate: well split, well convert
     samplesnotfinal = ordinationbuild.ordinationBuild(df4, i)
     
     #for multiple plates: offset plate by 14 columns
     samplesnotfinal["row"] += i*13
     
-    #create spacer
-    #spacer_df, metafile_df = ordiantionspacer.Add_Spacer(i)
-    # combine spacer and plate for the ordination file
-    #combined = ordinationbuild.Combine_plate_and_spacer(samplesnotfinal)
+ 
     combined = samplesnotfinal
-    
-    # insert spacer data for metafile into df. This one contains sample_name and well_id e.g F8, B4 etc.
-    # if metaspacer is None:
-    #     metaspacer = metafile_df.copy()
-    # else:
-    #     metaspacer = pd.concat([metaspacer, metafile_df], ignore_index=True)
         
     # same song here. This one contains sample name and row/column  e.g 3 8, 7 4 etc...  
     if endplate is None:
@@ -44,16 +69,13 @@ for i in range(len(ordinationbuild.filtered_plates)):
 #taking combined plates and spacers
 samples = ordinationbuild.finalDataframeBuild(endplate)
 #write ordination with skbio 
-ordinationbuild.ordinationWrite(samples)
+ordinationbuild.ordinationWrite(samples, folder_name, ordinationbuild.output_ordin)
 
-#fuse metafile with metadata for spacers
-#metafile = pd.concat([ordinationbuild.df, metaspacer], ignore_index=True)
-#save new metafile as .tsv for emperor building
-#pd.DataFrame(metafile).to_csv("meta_plate.tsv", sep="\t", index=False)
+
 
 #build qza and qzv plot
-qiimebuild.qzabuildsingle()
-qiimebuild.empbuildsingle()
+qiimebuild.qzabuildsingle(folder_name)
+qiimebuild.empbuildsingle(folder_name)
 
 """
 im still getting this futurewarning: FutureWarning: Setting an item of incompatible dtype is deprecated and will raise an error in a future version of pandas. Value '[nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan

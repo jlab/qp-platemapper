@@ -1,9 +1,10 @@
 import pandas as pd # pyright: ignore[reportMissingModuleSource]
 #import numpy as np
 from skbio.stats.ordination import OrdinationResults # pyright: ignore[reportMissingImports]
-import tkinter
-from tkinter import filedialog
-import shutil # for copying metafile to main folder
+#import tkinter
+#from tkinter import filedialog
+#import shutil # for copying metafile to main folder
+#import os
 
 
 
@@ -11,20 +12,25 @@ import shutil # for copying metafile to main folder
 Use tkinter to choose a file conveniently from a file Explorer,
 then insert into a dataframe(datafr). Will get scrapped.
 """
-# will be changed for other workflow
-def load_file():
-    window = tkinter.Tk()
-    window.minsize(1000, 1000)
-    window.withdraw()    #tkinter.Tk().withdraw()
-    file_path = filedialog.askopenfilename(filetypes=[("TSV files", "*.tsv")])# choose file
-    datafr = pd.read_csv(file_path, sep='\t')
-    shutil.copyfile(file_path, "./meta_plate.tsv")# copy metafile to current directory, really important for emperor later on
+# # will be changed for other workflow
+# def load_file():
+#     window = tkinter.Tk()
+#     window.minsize(1000, 1000)
+#     window.withdraw()    #tkinter.Tk().withdraw()
+#     file_path = filedialog.askopenfilename(parent= window, 
+#                                            filetypes=[("TSV files", "*.tsv")],
+#                                            title= "choose file:")# choose file
     
-    if not file_path:
-        raise KeyError("Incorrect folder or filetype, or maybe no file selected?")
+#     window.destroy()
     
-    # need: after file is chosen, clean output folder
-    return datafr
+#     datafr = pd.read_csv(file_path, sep='\t')
+#     shutil.copyfile(file_path, "./meta_plate.tsv")# copy metafile to current directory, really important for emperor later on
+    
+#     if not file_path:
+#         raise KeyError("Incorrect folder or filetype, or maybe no file selected?")
+    
+#     # need: after file is chosen, clean output folder
+#     return datafr, file_path
 
 def filter_cols(dictdataframe):
     
@@ -40,8 +46,8 @@ def filter_cols(dictdataframe):
         name = str(name)
         clean_name = name.replace("", "")  
         df_dict[f"df_{clean_name}"] = group  
-    for name in df_dict.values():
-        print(name)
+    # for name in df_dict.values():
+    #     print(name)
     
     numbered_dict = {i: v for i, v in enumerate(df_dict.values())}
     
@@ -132,7 +138,7 @@ def finalDataframeBuild(df2):
     )
     return samples
 
-def ordinationWrite(samples):
+def ordinationWrite(samples, foldername, outputpath):
     # MAKE UP VALUES 
     eigvals = pd.Series([0.13, 0.37])# MADE UP VALUES
     proportion_explained = pd.Series([0.5758, 0.4242])#MADE UP VALUES
@@ -155,17 +161,29 @@ def ordinationWrite(samples):
     i dont need it here (there are more arguments between samples and proportion_explained).
     """
    
-    with open(f"{output_ordin}/ordination.txt", "w") as f:
+    with open(f"{outputpath}/ordination_{foldername}_.txt", "w") as f:
 
-        ordination.write(f, format="ordination")# has to be written in  a way that outputs multiple ordination.txt files, done 
+        ordination.write(f, format="ordination")
         
-df = load_file()
-filtered_plates = filter_cols(df)
+        
+# def function_for_main():
+
+#     df, filepath = load_file()
+#     filtered_plates = filter_cols(df)
+
+#     #for ordination names
+#     file_dir = os.path.dirname(filepath)
+#     folder_name = os.path.basename(file_dir)
+#     return filtered_plates, folder_name
+# filtered_plates, filepath = function_for_main()
+
 
 # file paths for saving
 output_qza = "output/artifact_results"
 output_qzv = "output/emp_results"
 output_ordin = "output/ordination_files"
+
+
 
 """
 cd ~

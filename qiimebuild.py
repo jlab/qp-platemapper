@@ -3,6 +3,7 @@ from qiime2.plugins.emperor.visualizers import plot # pyright: ignore[reportMiss
 import glob
 import ordinationbuild
 
+
 # file paths for saving and loading files
 output_qza = "output/artifact_results"
 output_qzv = "output/emp_results"
@@ -12,14 +13,15 @@ output_ordin = "output/ordination_files"
 
 
 
-def qzabuildsingle():
+
+def qzabuildsingle(foldername):
     ordination = Artifact.import_data(
         "PCoAResults",
-        f"./{output_ordin}/ordination.txt",
+        f"./{output_ordin}/ordination_{foldername}_.txt",
         view_type="OrdinationFormat"
     )
       #save .qza file
-    ordination.save(f"./{output_qza}/ordination.qza")
+    ordination.save(f"./{output_qza}/ordination_{foldername}_.qza")
 # build the .qza files, needed for building emperor files
 def qzabuild():
 
@@ -41,15 +43,15 @@ def qzabuild():
         
 
 
-def empbuildsingle():
+def empbuildsingle(foldername):
     #load .qza
-    empbuild = Artifact.load(f"./{output_qza}/ordination.qza")
+    empbuild = Artifact.load(f"./{output_qza}/ordination_{foldername}_.qza")
     #load metadata file
     metadata = Metadata.load("meta_plate.tsv")
     # choose pcoa, important
     vis = plot(pcoa = empbuild, metadata = metadata, ignore_missing_samples=True)
     #save .qzv file
-    vis.visualization.save(f"./{output_qzv}/emp_plot.qzv")
+    vis.visualization.save(f"./{output_qzv}/emp_plot_{foldername}_.qzv")
     
 #build .qzv file for visual output via emperor
 def empbuild():
