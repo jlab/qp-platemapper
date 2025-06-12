@@ -1,15 +1,23 @@
 import ordinationbuild
 import os
 import pandas as pd # pyright: ignore[reportMissingModuleSource]
+import filecmp
+#import sys
+
+
 
 
 
 base_dir = "/home/sven/Desktop/bsc_env/qp-platemapper/platemapper/tests/data"
 file_name = "meta_plate.tsv"
 output_dir = "/home/sven/Desktop/bsc_env/qp-platemapper/output/tests"
+test_dir = "/home/sven/Desktop/bsc_env/qp-platemapper/test"
 os.makedirs(output_dir, exist_ok=True)
 
 endplate = None
+
+
+
 
 for folder in os.listdir(base_dir):
     folder_path = os.path.join(base_dir, folder)
@@ -40,5 +48,12 @@ for folder in os.listdir(base_dir):
         ordinationbuild.ordinationWrite(samples, folder, output_dir)
         endplate = None
     print(f"{folder}: Ordination loaded.")
-        
 
+for filename in os.listdir(test_dir):
+    path1 = os.path.join(output_dir, filename)
+    path2 = os.path.join(test_dir, filename)
+
+    if filecmp.cmp(path1, path2, shallow=False):
+        print(f"{filename}:Dateien sind identisch")
+    else:
+        print(f"{filename}: Error")
