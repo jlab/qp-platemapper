@@ -14,21 +14,30 @@ jobs:
     - name: Checkout Repo
       uses: actions/checkout@v2
 
-    - name: Setup for conda
-      uses: conda-incubator/setup-miniconda@v2
-      with:
-        auto-update-conda: true
-        python-version: '3.9'
+    - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          python-version: 3.9
+          channels: conda-forge
+          activate-environment: qp-platemapper
+          environment-file: https://data.qiime2.org/distro/amplicon/qiime2-amplicon-2024.5-py39-linux-conda.yml
 
-    - name: Install dependencies
-      run: |
-        conda config --add channels defaults
-        conda config --add channels conda-forge
-        conda config --add channels bioconda
-        conda init
-        conda deactivate
-        source /home/runner/.bashrc
-        conda env create -n qp-platemapper --file https://data.qiime2.org/distro/amplicon/qiime2-amplicon-2024.5-py39-linux-conda.yml
+    # - name: Setup for conda
+    #   uses: conda-incubator/setup-miniconda@v2
+    #   with:
+    #     auto-update-conda: true
+    #     python-version: '3.9'
+
+    # - name: Install dependencies
+    #   run: |
+    #     conda config --add channels defaults
+    #     conda config --add channels conda-forge
+    #     conda config --add channels bioconda
+    #     conda init
+    #     conda deactivate
+    #     source /home/runner/.bashrc
+    #     conda env create -n qp-platemapper --file https://data.qiime2.org/distro/amplicon/qiime2-amplicon-2024.5-py39-linux-conda.yml
     #
     #
     # - name: Generate Ordination Layouts
