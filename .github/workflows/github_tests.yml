@@ -2,9 +2,9 @@ name: Integration Tests & Code Style
 
 on:
   push:
-    branches: [ master, dev ]
+    branches: [ main ]
   pull_request:
-    branches: [ master, dev ]
+    branches: [ main ]
 
 jobs:
   build-linux:
@@ -13,31 +13,35 @@ jobs:
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v2
+
+    - name: Setup for conda
+      uses: conda-incubator/setup-miniconda@v2
       with:
-          lfs: true
-    - name: Set up Python
-      uses: actions/setup-python@v2
+        auto-update-conda: true
+        python-version: '3.9'
 
     - name: Install dependencies
       run: |
-        $CONDA/bin/conda env update --file environment.yml --name base
-        $CONDA/bin/conda env create --name qiime2-amplicon-2025.4 --file https://raw.githubusercontent.com/qiime2/distributions/refs/heads/dev/2025.4/amplicon/released/qiime2-amplicon-ubuntu-latest-conda.yml
-
-    - name: Generate Ordination Layouts
-      run: |
-        tmpdir=`~/temp`
-        mkdir -p $tmpdir
-        cd $tmpdir && python -c 'print("Hallo")' > test.txt
-
-    # - name: Lint with flake8
+          conda config --add channels conda-forge
+          conda deactivate
+          conda env create -n qp-platemapper --file https://data.qiime2.org/distro/amplicon/qiime2-amplicon-2024.5-py39-linux-conda.yml
+    #
+    #
+    # - name: Generate Ordination Layouts
     #   run: |
-    #     $CONDA/bin/flake8 src/marbel/
-
-    - name: Archive results
-      uses: actions/upload-artifact@v4
-      with:
-        name: ordinations
-        path: ~/temp
+    #     tmpdir=`~/temp`
+    #     mkdir -p $tmpdir
+    #     cd $tmpdir && python -c 'print("Hallo")' > test.txt
+    #
+    # # - name: Lint with flake8
+    # #   run: |
+    # #     $CONDA/bin/flake8 src/marbel/
+    #
+    # - name: Archive results
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: ordinations
+    #     path: ~/temp
 
     # - name: Run tests with pytest
     #   run: |
