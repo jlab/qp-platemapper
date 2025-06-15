@@ -38,8 +38,10 @@ jobs:
         pwd
         conda list
         echo $CONDA_PREFIX
-        find / -name "*pytest*" 2> /dev/null
-        /usr/share/miniconda/envs/qp-platemapper/bin/pytest
+        ls -la /usr/share/miniconda/envs/qp-platemapper/bin/pytest /usr/share/miniconda/bin/pytest
+        file /usr/share/miniconda/envs/qp-platemapper/bin/pytest
+        file /usr/share/miniconda/bin/pytest
+
 
 
 
