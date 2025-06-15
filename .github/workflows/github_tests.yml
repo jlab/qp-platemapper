@@ -38,7 +38,7 @@ jobs:
         pwd
         conda list
         echo $CONDA_PREFIX
-        pytest
+        find / -name "*pytest*"
 
 
 
