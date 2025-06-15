@@ -41,6 +41,7 @@ jobs:
         ls -la /usr/share/miniconda/envs/qp-platemapper/bin/pytest /usr/share/miniconda/bin/pytest
         file /usr/share/miniconda/envs/qp-platemapper/bin/pytest
         file /usr/share/miniconda/bin/pytest
+        /usr/share/miniconda/bin/pytest
 
 
 
