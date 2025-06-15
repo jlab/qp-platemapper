@@ -17,8 +17,8 @@ jobs:
     - name: Download conda env info for qiime2 amplicon 2024.5
       run: |
         curl -L https://data.qiime2.org/distro/amplicon/qiime2-amplicon-2024.5-py39-linux-conda.yml -o environment.yml
-        echo "name: qp-platemapper" > named_env.yaml
-        cat environment.yaml >> named_env.yaml
+        echo "name: qp-platemapper" > named_env.yml
+        cat environment.yml >> named_env.yml
 
     - name: Set up Miniconda
       uses: conda-incubator/setup-miniconda@v3
@@ -31,12 +31,10 @@ jobs:
 
     - name: Add additional dependencies
       run: |
-        conda activate qp-platemapper
         conda install pytest-cov -y
 
     - name: Execute tests
       run: |
-        conda activate qp-platemapper
         cd qp-platemapper && pytest --cov=platemapper
 
 
