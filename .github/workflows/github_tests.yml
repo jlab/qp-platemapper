@@ -35,7 +35,7 @@ jobs:
 
     - name: Execute tests
       run: |
-        cd qp-platemapper && pytest --cov=platemapper
+        pytest --cov=platemapper
 
 
 
