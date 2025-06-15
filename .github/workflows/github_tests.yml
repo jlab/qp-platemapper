@@ -14,7 +14,7 @@ jobs:
     - name: Checkout Repo
       uses: actions/checkout@v2
 
-    - name: Download environment.yml
+    - name: Download conda env info for qiime2 amplicon 2024.5
       run: curl -L https://data.qiime2.org/distro/amplicon/qiime2-amplicon-2024.5-py39-linux-conda.yml -o environment.yml
 
     - name: Set up Miniconda
@@ -25,6 +25,18 @@ jobs:
         channels: conda-forge
         activate-environment: qp-platemapper
         environment-file: environment.yml
+
+    - name: Add additional dependencies
+      run: |
+        conda activate qp-platemapper
+        conda install pytest-cov -y
+
+    - name: Execute tests
+      run: |
+        conda activate qp-platemapper
+        cd qp-platemapper && pytest --cov=platemapper
+
+
 
     # - name: Setup for conda
     #   uses: conda-incubator/setup-miniconda@v2
