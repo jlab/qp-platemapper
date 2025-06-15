@@ -35,6 +35,7 @@ jobs:
 
     - name: Execute tests
       run: |
+        pwd
         pytest --cov=platemapper
 
 
