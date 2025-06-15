@@ -27,6 +27,7 @@ jobs:
         conda config --add channels bioconda
         conda init
         conda deactivate
+        . ~/.bashrc
         conda env create -n qp-platemapper --file https://data.qiime2.org/distro/amplicon/qiime2-amplicon-2024.5-py39-linux-conda.yml
     #
     #
