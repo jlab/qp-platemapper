@@ -37,7 +37,8 @@ jobs:
       run: |
         pwd
         conda list
-        pytest --cov=platemapper
+        echo $CONDA_PREFIX
+        pytest
 
 
 
