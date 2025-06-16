@@ -17,7 +17,7 @@ filehandler.makefolder()
 
 #create empty variables, important later on
 endplate = None
-metaspacer = None
+
 
 
 def load_file():
@@ -71,7 +71,8 @@ for i in range(len(filtered_plates)):
 #taking combined plates and spacers
 samples = ordinationbuild.finalDataframeBuild(endplate)
 #write ordination with skbio 
-ordinationbuild.ordinationWrite(samples, foldername=None, outputpath=ordinationbuild.output_ordin)
+ordination = ordinationbuild.ordinationCreate(samples)
+ordinationbuild.ordinationWrite(ordination, foldername=None, outputpath=ordinationbuild.output_ordin)
 
 
 

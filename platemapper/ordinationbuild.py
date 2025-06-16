@@ -138,7 +138,7 @@ def finalDataframeBuild(df2):
     )
     return samples
 
-def ordinationWrite(samples, foldername, outputpath):
+def ordinationCreate(samples):
     # MAKE UP VALUES 
     eigvals = pd.Series([0.13, 0.37])# MADE UP VALUES
     proportion_explained = pd.Series([0.5758, 0.4242])#MADE UP VALUES
@@ -159,7 +159,12 @@ def ordinationWrite(samples, foldername, outputpath):
     fun fact if proportion explained wont be written the way it does it nukes
     the Ordination, because i am not giving all arguments to the ordination function as
     i dont need it here (there are more arguments between samples and proportion_explained).
+    
     """
+    
+    return ordination
+
+def ordinationWrite(ordination, foldername, outputpath):
     
     filename = f"ordination{foldername}.txt" if foldername else "ordination.txt"
     with open(f"{outputpath}/{filename}", "w") as f:
