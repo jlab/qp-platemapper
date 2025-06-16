@@ -1,0 +1,5 @@
+.gitignore
+coverage.lcov
+.coverage
+platemapper/tests/__pycache__
+.pytest_cache/
