@@ -38,49 +38,10 @@ jobs:
       shell: bash -el {0}
       run: |
         conda info
-        pytest
+        pytest --cov=platemapper --cov-report=lcov
 
-
-
-
-    # - name: Setup for conda
-    #   uses: conda-incubator/setup-miniconda@v2
-    #   with:
-    #     auto-update-conda: true
-    #     python-version: '3.9'
-
-    # - name: Install dependencies
-    #   run: |
-    #     conda config --add channels defaults
-    #     conda config --add channels conda-forge
-    #     conda config --add channels bioconda
-    #     conda init
-    #     conda deactivate
-    #     source /home/runner/.bashrc
-    #     conda env create -n qp-platemapper --file https://data.qiime2.org/distro/amplicon/qiime2-amplicon-2024.5-py39-linux-conda.yml
-    #
-    #
-    # - name: Generate Ordination Layouts
-    #   run: |
-    #     tmpdir=`~/temp`
-    #     mkdir -p $tmpdir
-    #     cd $tmpdir && python -c 'print("Hallo")' > test.txt
-    #
-    # # - name: Lint with flake8
-    # #   run: |
-    # #     $CONDA/bin/flake8 src/marbel/
-    #
-    # - name: Archive results
-    #   uses: actions/upload-artifact@v4
-    #   with:
-    #     name: ordinations
-    #     path: ~/temp
-
-    # - name: Run tests with pytest
-    #   run: |
-    #     $CONDA/bin/pytest . --ignore=tests/test_functional.py --doctest-modules --cov=src/marbel --cov-report=lcov
-    # - name: Send coverage report to Coveralls
-    #   uses: coverallsapp/github-action@master
-    #   with:
-    #     github-token: ${{ secrets.GITHUB_TOKEN }}
-    #     path-to-lcov: "coverage.lcov"
+    - name: Send coverage report to Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: "coverage.lcov"
