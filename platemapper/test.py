@@ -7,11 +7,11 @@ import filecmp
 
 
 
-
-base_dir = "/home/sven/Desktop/bsc_env/qp-platemapper/platemapper/tests/data"
+# remove hard paths
+base_dir = "tests/data"
 file_name = "meta_plate.tsv"
-output_dir = "/home/sven/Desktop/bsc_env/qp-platemapper/output/tests"
-test_dir = "/home/sven/Desktop/bsc_env/qp-platemapper/test"
+output_dir = "tests/ordinationtest"
+test_dir = "tests/testordinations"
 os.makedirs(output_dir, exist_ok=True)
 
 endplate = None

@@ -160,8 +160,9 @@ def ordinationWrite(samples, foldername, outputpath):
     the Ordination, because i am not giving all arguments to the ordination function as
     i dont need it here (there are more arguments between samples and proportion_explained).
     """
-   
-    with open(f"{outputpath}/ordination_{foldername}_.txt", "w") as f:
+    
+    filename = f"ordination{foldername}.txt" if foldername else "ordination.txt"
+    with open(f"{outputpath}/{filename}", "w") as f:
 
         ordination.write(f, format="ordination")
         

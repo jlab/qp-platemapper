@@ -1,4 +1,4 @@
-import testing.filehandler as filehandler
+import filehandler 
 import ordinationbuild 
 import qiimebuild
 import pandas as pd # pyright: ignore[reportMissingModuleSource]
@@ -11,7 +11,9 @@ import os
 #execute everything
 
 # make folderstructure
-filehandler.makefolder() 
+
+filehandler.makefolder()
+
 
 #create empty variables, important later on
 endplate = None
@@ -69,13 +71,13 @@ for i in range(len(filtered_plates)):
 #taking combined plates and spacers
 samples = ordinationbuild.finalDataframeBuild(endplate)
 #write ordination with skbio 
-ordinationbuild.ordinationWrite(samples, folder_name, ordinationbuild.output_ordin)
+ordinationbuild.ordinationWrite(samples, foldername=None, outputpath=ordinationbuild.output_ordin)
 
 
 
 #build qza and qzv plot
-qiimebuild.qzabuildsingle(folder_name)
-qiimebuild.empbuildsingle(folder_name)
+qiimebuild.qzabuildsingle(foldername=None)
+qiimebuild.empbuildsingle(foldername=None)
 
 """
 im still getting this futurewarning: FutureWarning: Setting an item of incompatible dtype is deprecated and will raise an error in a future version of pandas. Value '[nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan

@@ -15,13 +15,14 @@ output_ordin = "output/ordination_files"
 
 
 def qzabuildsingle(foldername):
+    filename = f"ordination{foldername}.txt" if foldername else "ordination"
     ordination = Artifact.import_data(
         "PCoAResults",
-        f"./{output_ordin}/ordination_{foldername}_.txt",
+        f"./{output_ordin}/{filename}.txt",
         view_type="OrdinationFormat"
     )
       #save .qza file
-    ordination.save(f"./{output_qza}/ordination_{foldername}_.qza")
+    ordination.save(f"./{output_qza}/{filename}.qza")
 # build the .qza files, needed for building emperor files
 def qzabuild():
 
@@ -44,14 +45,15 @@ def qzabuild():
 
 
 def empbuildsingle(foldername):
+    filename = f"ordination{foldername}" if foldername else "ordination"
     #load .qza
-    empbuild = Artifact.load(f"./{output_qza}/ordination_{foldername}_.qza")
+    empbuild = Artifact.load(f"./{output_qza}/{filename}.qza")
     #load metadata file
     metadata = Metadata.load("meta_plate.tsv")
     # choose pcoa, important
     vis = plot(pcoa = empbuild, metadata = metadata, ignore_missing_samples=True)
     #save .qzv file
-    vis.visualization.save(f"./{output_qzv}/emp_plot_{foldername}_.qzv")
+    vis.visualization.save(f"./{output_qzv}/emp_plot.qzv")
     
 #build .qzv file for visual output via emperor
 def empbuild():
