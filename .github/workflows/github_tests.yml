@@ -2,9 +2,9 @@ name: Integration Tests & Code Style
 
 on:
   push:
-    branches: [ master, dev ]
+    branches: [ main ]
   pull_request:
-    branches: [ master, dev ]
+    branches: [ main ]
 
 jobs:
   build-linux:
@@ -13,37 +13,35 @@ jobs:
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v2
-      with:
-          lfs: true
-    - name: Set up Python
-      uses: actions/setup-python@v2
 
-    - name: Install dependencies
+    - name: Download conda env info for qiime2 amplicon 2024.5
       run: |
-        $CONDA/bin/conda env update --file environment.yml --name base
-        $CONDA/bin/conda env create --name qiime2-amplicon-2025.4 --file https://raw.githubusercontent.com/qiime2/distributions/refs/heads/dev/2025.4/amplicon/released/qiime2-amplicon-ubuntu-latest-conda.yml
+        curl -L https://data.qiime2.org/distro/amplicon/qiime2-amplicon-2024.5-py39-linux-conda.yml -o environment.yml
+        echo "name: qp-platemapper" > named_env.yml
+        cat environment.yml >> named_env.yml
 
-    - name: Generate Ordination Layouts
-      run: |
-        tmpdir=`~/temp`
-        mkdir -p $tmpdir
-        cd $tmpdir && python -c 'print("Hallo")' > test.txt
-
-    # - name: Lint with flake8
-    #   run: |
-    #     $CONDA/bin/flake8 src/marbel/
-
-    - name: Archive results
-      uses: actions/upload-artifact@v4
+    - name: Set up Miniconda
+      uses: conda-incubator/setup-miniconda@v3
       with:
-        name: ordinations
-        path: ~/temp
+        auto-update-conda: true
+        python-version: 3.9
+        channels: conda-forge
+        activate-environment: qp-platemapper
+        environment-file: named_env.yml
 
-    # - name: Run tests with pytest
-    #   run: |
-    #     $CONDA/bin/pytest . --ignore=tests/test_functional.py --doctest-modules --cov=src/marbel --cov-report=lcov
-    # - name: Send coverage report to Coveralls
-    #   uses: coverallsapp/github-action@master
-    #   with:
-    #     github-token: ${{ secrets.GITHUB_TOKEN }}
-    #     path-to-lcov: "coverage.lcov"
+    - name: Add additional dependencies
+      shell: bash -el {0}  # https://github.com/conda-incubator/setup-miniconda?tab=readme-ov-file#important
+      run: |
+        conda install pytest-cov -y
+
+    - name: Execute tests
+      shell: bash -el {0}
+      run: |
+        conda info
+        pytest --cov=platemapper --cov-report=lcov
+
+    - name: Send coverage report to Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: "coverage.lcov"
