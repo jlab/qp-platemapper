@@ -1,0 +1,2 @@
+[![Integration Tests & Code Style](https://github.com/jlab/qp-platemapper/actions/workflows/github_tests.yml/badge.svg)](https://github.com/jlab/qp-platemapper/actions/workflows/github_tests.yml) [![Coverage Status](https://coveralls.io/repos/github/jlab/qp-platemapper/badge.svg?branch=master)](https://coveralls.io/github/jlab/qp-platemapper?branch=add_workflow)
+# A private plugin for Qiita to generate plate layout Emperor visualizations
