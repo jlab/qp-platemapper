@@ -30,10 +30,12 @@ jobs:
         environment-file: named_env.yml
 
     - name: Add additional dependencies
+      shell: bash -el {0}  # https://github.com/conda-incubator/setup-miniconda?tab=readme-ov-file#important
       run: |
         conda install pytest-cov -y
 
     - name: Execute tests
+      shell: bash -el {0}
       run: |
         pwd
         conda list
