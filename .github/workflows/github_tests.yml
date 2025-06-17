@@ -37,7 +37,7 @@ jobs:
     - name: Execute tests
       shell: bash -el {0}
       run: |
-        conda info
+        pip install -e .
         pytest --cov=platemapper --cov-report=lcov
 
     - name: Send coverage report to Coveralls
