@@ -48,8 +48,8 @@ def check_compatability(path):
     
 
 def test_foo(): 
-    exp = OrdinationResults.read("tests/data/Kurth_JIA/ordination_Kurth_JIA.txt")
-    obs = ordination_no_file(path="tests/data/Kurth_JIA/meta_plate.tsv")
+    exp = OrdinationResults.read("platemapper/tests/data/Kurth_JIA/ordination_Kurth_JIA.txt")
+    obs = ordination_no_file(path="platemapper/tests/data/Kurth_JIA/meta_plate.tsv")
     print("Expected Ordination")
     print(exp)
     print("Observed ordination")
@@ -66,9 +66,9 @@ def test_foo():
 
 
 def test_all():
-    for path in glob.glob("tests/data/**/meta_plate.tsv"):
+    for path in glob.glob("platemapper/tests/data/**/meta_plate.tsv"):
         parentFolder = os.path.basename(os.path.dirname(path))
-        exp = OrdinationResults.read(f"tests/data/{parentFolder}/ordination_{parentFolder}.txt")
+        exp = OrdinationResults.read(f"platemapper/tests/data/{parentFolder}/ordination_{parentFolder}.txt")
         obs = ordination_no_file(path)
         
         # print(f"exp_sample:{parentFolder}")
