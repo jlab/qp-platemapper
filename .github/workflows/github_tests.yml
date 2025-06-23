@@ -32,7 +32,11 @@ jobs:
     - name: Add additional dependencies
       shell: bash -el {0}  # https://github.com/conda-incubator/setup-miniconda?tab=readme-ov-file#important
       run: |
-        conda install pytest-cov -y
+        conda install pytest-cov flake8 -y
+
+    - name: Lint with flake8
+      run: |
+        $CONDA/bin/flake8 platemapper/
 
     - name: Execute tests
       shell: bash -el {0}
