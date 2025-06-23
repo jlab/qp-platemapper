@@ -35,6 +35,7 @@ jobs:
         conda install pytest-cov flake8 -y
 
     - name: Lint with flake8
+      shell: bash -el {0}
       run: |
         flake8 platemapper/
 
