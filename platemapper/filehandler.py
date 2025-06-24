@@ -19,3 +19,5 @@ def makefolder():
 def clearfolder():
     shutil.rmtree(OUTPUT_QZA)
     shutil.rmtree(OUTPUT_QZV)
+
+# for push
