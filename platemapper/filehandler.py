@@ -1,19 +1,21 @@
 import os
 import shutil
 
-#filepaths
-output_qza = "output/artifact_results"
-output_qzv = "output/emp_results"
-output_ordin = "output/ordination_files"
+# filepaths: global variables
+OUTPUT_QZA = "output/artifact_results"
+OUTPUT_QZV = "output/emp_results"
+OUTPUT_ORDIN = "output/ordination_files"
+
+# create directories, exist_ok=True so it wont cry if the
+# directories already exist
 
 
-
-#create directories, exist_ok=True so it wont cry if the directories already exist
 def makefolder():
-    os.makedirs(output_qza, exist_ok=True)
-    os.makedirs(output_qzv, exist_ok=True)
-    os.makedirs(output_ordin, exist_ok=True)
-    
+    os.makedirs(OUTPUT_QZA, exist_ok=True)
+    os.makedirs(OUTPUT_QZV, exist_ok=True)
+    os.makedirs(OUTPUT_ORDIN, exist_ok=True)
+
+
 def clearfolder():
-   shutil.rmtree(output_qza)
-   shutil.rmtree(output_qzv)
+    shutil.rmtree(OUTPUT_QZA)
+    shutil.rmtree(OUTPUT_QZV)
