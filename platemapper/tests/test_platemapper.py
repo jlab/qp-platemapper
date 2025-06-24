@@ -1,12 +1,8 @@
-from skbio.stats.ordination import OrdinationResults # pyright: ignore[reportMissingImports]
+from skbio.stats.ordination import OrdinationResults
 from platemapper import ordinationbuild
-
-import pandas as pd # pyright: ignore[reportMissingModuleSource]
-#import numpy as np
+import pandas as pd  # pyright: ignore[reportMissingModuleSource]
 import glob
 import os
-
-
 
 
 def ordination_no_file(path):
@@ -38,18 +34,21 @@ def ordination_no_file(path):
 
     return ordination
 
+
 def check_compatability(path):
 
     df = pd.read_csv(path, sep="\t")
     if "well_id" not in df.columns:
-        raise KeyError("No Column named well_id. Please rename fitting Column to well_id")
+        raise KeyError("No Column named well_id. Please rename fitting Column to well_id")  # noqa: E501
     if "plate_id" not in df.columns:
-        raise KeyError("Column plate_id not found. Please rename fitting Column to plate_id")
+        raise KeyError("Column plate_id not found. Please rename fitting Column to plate_id")  # noqa: E501
 
 
 def test_foo():
-    exp = OrdinationResults.read("platemapper/tests/data/Kurth_JIA/ordination_Kurth_JIA.txt")
-    obs = ordination_no_file(path="platemapper/tests/data/Kurth_JIA/meta_plate.tsv")
+    exp = OrdinationResults.read(
+        "platemapper/tests/data/Kurth_JIA/ordination_Kurth_JIA.txt")
+    obs = ordination_no_file(
+        path="platemapper/tests/data/Kurth_JIA/meta_plate.tsv")
     print("Expected Ordination")
     print(exp)
     print("Observed ordination")
@@ -60,20 +59,19 @@ def test_foo():
     # print("obs_samples_testfoo")
     # print(obs.samples.values[:8])
 
-    #assert np.allclose(exp.samples.values, obs.samples.values)
+    # assert np.allclose(exp.samples.values, obs.samples.values)
     assert str(exp) == str(obs)
-
 
 
 def test_all():
     for path in glob.glob("platemapper/tests/data/**/meta_plate.tsv"):
         parentFolder = os.path.basename(os.path.dirname(path))
-        exp = OrdinationResults.read(f"platemapper/tests/data/{parentFolder}/ordination_{parentFolder}.txt")
+        exp = OrdinationResults.read(f"platemapper/tests/data/{parentFolder}/ordination_{parentFolder}.txt")  # noqa: E501
         obs = ordination_no_file(path)
 
         # print(f"exp_sample:{parentFolder}")
         # print(exp.samples.values[:10])
         # print(f"obs_samples:{parentFolder}")
         # print(obs.samples.values[:10])
-        #assert np.allclose(exp.samples.values, obs.samples.values)
+        # assert np.allclose(exp.samples.values, obs.samples.values)
         assert str(exp) == str(obs)
