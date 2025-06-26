@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, experimental-recent-changes ]
 
 jobs:
   build-linux:
@@ -32,12 +32,17 @@ jobs:
     - name: Add additional dependencies
       shell: bash -el {0}  # https://github.com/conda-incubator/setup-miniconda?tab=readme-ov-file#important
       run: |
-        conda install pytest-cov -y
+        conda install pytest-cov flake8 -y
+
+    - name: Lint with flake8
+      shell: bash -el {0}
+      run: |
+        flake8 platemapper/
 
     - name: Execute tests
       shell: bash -el {0}
       run: |
-        conda info
+        pip install -e .
         pytest --cov=platemapper --cov-report=lcov
 
     - name: Send coverage report to Coveralls
