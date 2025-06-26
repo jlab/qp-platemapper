@@ -39,9 +39,11 @@ def check_compatability(path):
 
     df = pd.read_csv(path, sep="\t")
     if "well_id" not in df.columns:
-        raise KeyError("No Column named well_id. Please rename fitting Column to well_id")  # noqa: E501
+        raise KeyError("No Column named well_id."
+                       "Please rename fitting Column to well_id")
     if "plate_id" not in df.columns:
-        raise KeyError("Column plate_id not found. Please rename fitting Column to plate_id")  # noqa: E501
+        raise KeyError("Column plate_id not found."
+                       "Please rename fitting Column to plate_id")
 
 
 def test_foo():
@@ -66,7 +68,9 @@ def test_foo():
 def test_all():
     for path in glob.glob("platemapper/tests/data/**/meta_plate.tsv"):
         parentFolder = os.path.basename(os.path.dirname(path))
-        exp = OrdinationResults.read(f"platemapper/tests/data/{parentFolder}/ordination_{parentFolder}.txt")  # noqa: E501
+        exp = OrdinationResults.read(f"platemapper/tests/"
+                                     f"data/{parentFolder}/"
+                                     f"ordination_{parentFolder}.txt")
         obs = ordination_no_file(path)
 
         # print(f"exp_sample:{parentFolder}")

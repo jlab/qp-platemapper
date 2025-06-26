@@ -1,5 +1,4 @@
 import os
-import shutil
 
 # filepaths: global variables
 OUTPUT_QZA = "output/artifact_results"
@@ -17,7 +16,7 @@ def makefolder():
 
 
 def clearfolder():
-    shutil.rmtree(OUTPUT_QZA)
-    shutil.rmtree(OUTPUT_QZV)
+    os.remove(f"{OUTPUT_QZA}/*.qza")
+    os.remove(f"{OUTPUT_ORDIN}/*.txt")
 
 # for push

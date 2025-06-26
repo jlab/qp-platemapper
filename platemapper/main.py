@@ -2,8 +2,10 @@ from platemapper import filehandler
 import ordinationbuild
 import qiimebuild
 import pandas as pd  # pyright: ignore[reportMissingModuleSource]
+# -----------------------------
 import tkinter
 from tkinter import filedialog
+# -----------------------------
 import shutil
 import os
 # execute everything
@@ -89,12 +91,15 @@ samples = ordinationbuild.finalDataframeBuild(endplate)
 ordination = ordinationbuild.ordinationCreate(samples)
 ordinationbuild.ordinationWrite(ordination,
                                 foldername=None,
-                                outputpath=ordinationbuild.output_ordin)
+                                outputpath=qiimebuild.OUTPUT_ORDIN)
 
 
 # build qza and qzv plot
 qiimebuild.qzabuildsingle(foldername=None)
 qiimebuild.empbuildsingle(foldername=None)
+
+filehandler.clearfolder()
+
 
 """
 im still getting this futurewarning: FutureWarning:

@@ -25,7 +25,8 @@ def filter_cols(dictdataframe):
     """
 
     if "plate_id" not in dictdataframe.columns:
-        raise KeyError("Column plate_id not found. Please rename fitting Column to plate_id")  # noqa: E501
+        raise KeyError("Column plate_id not found."
+                       "Please rename fitting Column to plate_id")
 
     grouped = dictdataframe.groupby("plate_id")  # split metafile by plates
 
@@ -98,7 +99,8 @@ def ordinationBuild(df2, i):
     """
 
     if "well_id" not in df2.columns:
-        raise KeyError("No Column named well_id. Please rename fitting Column to well_id")  # noqa: E501
+        raise KeyError("No Column named well_id."
+                       "Please rename fitting Column to well_id")
 
     # Detect, if NaN values were written into well_ids from sample_name,
     # then deleting them
@@ -226,14 +228,10 @@ def ordinationWrite(ordination, foldername, outputpath):
         Ordination.txt file for further use in Emperor.
     """
 
-    filename = f"ordination{foldername}.txt" if foldername else "ordination.txt"  # noqa: E501
+    filename = (
+        f"ordination{foldername}.txt" if foldername else "ordination.txt"
+    )
+
     with open(f"{outputpath}/{filename}", "w") as f:
 
         ordination.write(f, format="ordination")
-
-# file paths for saving
-
-
-output_qza = "output/artifact_results"
-output_qzv = "output/emp_results"
-output_ordin = "output/ordination_files"
