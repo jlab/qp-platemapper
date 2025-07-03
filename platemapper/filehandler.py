@@ -16,7 +16,7 @@ def makefolder():
 
 
 def clearfolder():
-    os.remove(f"{OUTPUT_QZA}/*.qza")
-    os.remove(f"{OUTPUT_ORDIN}/*.txt")
+    os.remove(f"{OUTPUT_QZA}/ordination.qza")
+    os.remove(f"{OUTPUT_ORDIN}/ordination.txt")
 
 # for push

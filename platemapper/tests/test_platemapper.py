@@ -1,6 +1,6 @@
 from skbio.stats.ordination import OrdinationResults
 from platemapper import ordinationbuild
-import pandas as pd  # pyright: ignore[reportMissingModuleSource]
+import pandas as pd
 import glob
 import os
 

@@ -1,4 +1,4 @@
-import pandas as pd  # pyright: ignore[reportMissingModuleSource]
+import pandas as pd
 from skbio.stats.ordination import OrdinationResults
 
 
