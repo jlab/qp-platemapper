@@ -33,5 +33,5 @@ command = QiitaCommand(
     req_params, opt_params,
     outputs,
     dflt_param_set)
-)
+
 plugin.register_command(command)
