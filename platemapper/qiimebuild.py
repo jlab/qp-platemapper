@@ -1,7 +1,7 @@
 from qiime2 import Artifact, Metadata
 from qiime2.plugins.emperor.visualizers import plot
 import glob
-import ordinationbuild
+from platemapper import ordinationbuild
 
 
 # file paths for saving and loading files
