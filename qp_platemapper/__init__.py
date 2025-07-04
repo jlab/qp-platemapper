@@ -11,11 +11,11 @@ from .qp_platemapper import platemapper
 
 # Initialize the plugin
 plugin = QiitaPlugin(
-    'Platemapper', '0.1.0',
+    'Platemapper', '0.2.0',
     'Visualize plate layout for sequencing library construction')
 
 
-req_params = {'Sequencing library': ('artifact', ['Sequencing Data Type'])}
+req_params = {'Sequencing library': ('artifact', ['FASTA', 'FASTA_Sanger', 'SFF', 'FASTQ', 'per_sample_FASTQ', 'Demultiplexed'])}
 opt_params = {
     'Column name for well positions': ['choice:["well_id"]', 'well_id'],
     'Column name for plate ID': ['choice:["plate_id"]', 'plate_id'],
@@ -27,8 +27,8 @@ dflt_param_set = {
         'Column name for plate ID': 'plate_id',
         'plate layout': '96-well plate(s)'}}
 command = QiitaCommand(
-    "Platemapper 0.1.0",
     "generate plate mapping",
+    "Takes well position information (if given) of the prep data to create an interactive visualization",
     platemapper,
     req_params, opt_params,
     outputs,
