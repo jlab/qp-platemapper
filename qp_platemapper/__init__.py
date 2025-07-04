@@ -14,7 +14,7 @@ plugin = QiitaPlugin(
     'Platemapper', '0.2.0',
     'Visualize plate layout for sequencing library construction')
 
-
+# TODO: refactor 'Sequencing library' into 'Sequences artifact ID'
 req_params = {'Sequencing library': ('artifact', ['FASTA', 'FASTA_Sanger', 'SFF', 'FASTQ', 'per_sample_FASTQ', 'Demultiplexed'])}
 opt_params = {
     'Column name for well positions': ['choice:["well_id"]', 'well_id'],
@@ -27,6 +27,7 @@ dflt_param_set = {
         'Column name for plate ID': 'plate_id',
         'plate layout': '96-well plate(s)'}}
 command = QiitaCommand(
+    # TODO: refactor: maybe we indicate commands as "QC" to better let user know that this is for diagnostic purpose?
     "generate plate mapping",
     "Takes well position information (if given) of the prep data to create an interactive visualization",
     platemapper,
