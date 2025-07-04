@@ -1,65 +1,36 @@
 from platemapper import filehandler
-import ordinationbuild
-import qiimebuild
+from platemapper import ordinationbuild
+from platemapper import qiimebuild
 import pandas as pd
-# -----------------------------
-import tkinter
-from tkinter import filedialog
-# -----------------------------
+
 import shutil
 #  import os
 # execute everything
 
 # make folderstructure
 
+import qiime2
+import qiime2.plugins.emperor.actions as emperor_actions
+
 filehandler.makefolder()
 
 
-def load_file():
+
+
+
+def platemapper_execute(df:pd.DataFrame, fp_output:str, colname_plate_id="plate_id", colname_well_id='well_id'):
     """
-    Selecting a metafile (e.g. meta_plate.tsv). Right now
-    this happens via tkinter, but this will be erased soon
-    as quita doesnt need this. No idea as how it will have
-    to be implemented
-
-    Raises:
-        KeyError:   If no File Path exists, there will be no
-                    file chosen by user. User has to choose
-                    a File.
-
-    Returns:
-        df (pd.DataFrame):  metafile as pd.DataFrame for
-                            further manipulation
-
-        file_path (str; path):  filepath for copying the metafile
-                                into the correct position and
-                                for extracting the Foldername.
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame holding information about technical metadata of samples. One row = one sample. Must contain columns '' and ''.
+    fp_output : str
+        The filepath of the resulting Qiime2 qzv artifact.
     """
-    window = tkinter.Tk()
-    window.minsize(1000, 1000)
-    window.withdraw()    # tkinter.Tk().withdraw()
-    file_path = filedialog.askopenfilename(parent=window,
-                                           filetypes=[("TSV files", "*.tsv")],
-                                           title="choose file:")  # choose file
 
-    window.destroy()
-
-    datafr = pd.read_csv(file_path, sep='\t')
-    # opy metafile to current directory, really important for emperor later on
-    shutil.copyfile(file_path, "./meta_plate.tsv")
-
-    if not file_path:
-        raise KeyError("Incorrect folder or filetype.")
-
-    # need: after file is chosen, clean output folder
-    return datafr, file_path
-
-
-def platemapper_execute():
     # create empty variable, important later on
     endplate = None
 
-    df, filepath = load_file()
     filtered_plates = ordinationbuild.filter_cols(df)
 
     # uhhhh suddenly the vars dont work when in function
@@ -88,15 +59,26 @@ def platemapper_execute():
     samples = ordinationbuild.finalDataframeBuild(endplate)
     # write ordination with skbio
     ordination = ordinationbuild.ordinationCreate(samples)
-    ordinationbuild.ordinationWrite(ordination,
-                                    foldername=None,
-                                    outputpath=qiimebuild.OUTPUT_ORDIN)
 
-    # build qza and qzv plot
-    qiimebuild.qzabuildsingle(foldername=None)
-    qiimebuild.empbuildsingle(foldername=None)
+    # convert the ordination into a Qiime2 artifact
+    q2_pcoa = qiime2.Artifact.import_data('PCoAResults', ordination)
+    # convert the metadata dataframe into a Qiime2 object
+    q2_meta = qiime2.Metadata(df)
 
-    filehandler.clearfolder()
+    # use "plot" of emperor to create the q2 emperor plot
+    q2_emp = emperor_actions.plot(pcoa=q2_pcoa, metadata=q2_meta)
+
+    q2_emp.visualization.save(fp_output)
+
+    # ordinationbuild.ordinationWrite(ordination,
+    #                                 foldername=None,
+    #                                 outputpath=qiimebuild.OUTPUT_ORDIN)
+    #
+    # # build qza and qzv plot
+    # qiimebuild.qzabuildsingle(foldername=None)
+    # qiimebuild.empbuildsingle(foldername=None)
+    #
+    # filehandler.clearfolder()
 
 
 if __name__ == "__main__":

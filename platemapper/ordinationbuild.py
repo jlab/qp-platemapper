@@ -138,7 +138,7 @@ def ordinationBuild(df2, i):
     df2["column"] = temp.astype(float)
 
     # create 3rd and final dataframe
-    whatever = {"sample_name": df2["sample_name"],
+    whatever = {"sample_name": df2.index,
                 "row": df2["row"],
                 "column": df2["column"]}
     df3 = pd.DataFrame(data=whatever)
