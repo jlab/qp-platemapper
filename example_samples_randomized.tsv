@@ -1,0 +1,45 @@
+sample_name	mutation	animal_contact	plate_id	well_id	collection_platform
+sample.Ax93dT	WT	yes	1	G3	plate_reader
+sample.vK4n2	WT	yes	1	B10	plate_reader
+sample.Bt7pL5	WT	no	1	F1	plate_reader
+sample.QwE8z	WT	no	1	H5	plate_reader
+sample.r91Km	WT	no	1	C11	plate_reader
+sample.Yu7Df	WT	yes	1	D2	plate_reader
+sample.gZ8pM	WT	yes	1	A7	plate_reader
+sample.N3lVd	WT	no	1	G8	plate_reader
+sample.hT7rX	WT	no	1	B2	plate_reader
+sample.Kx20z	WT	no	1	F9	plate_reader
+sample.FgP9e	WT	yes	1	E12	plate_reader
+sample.McL83	WT	yes	1	C5	plate_reader
+sample.jA5sQ	WT	no	1	A11	plate_reader
+sample.dXy70	WT	no	1	H1	plate_reader
+sample.RZ4wn	WT	no	1	E2	plate_reader
+sample.V1tKc	WT	yes	1	D11	plate_reader
+sample.pU8Ls	WT	yes	1	B7	plate_reader
+sample.xNQ39	WT	no	1	G12	plate_reader
+sample.Tz4Pm	WT	no	1	H7	plate_reader
+sample.C7bWq	WT	no	1	A2	plate_reader
+sample.Sm1dY	WT	yes	1	C9	plate_reader
+sample.LrK92	+	yes	1	E4	plate_reader
+sample.Hf8vC	+	no	1	F6	plate_reader
+sample.Uo93X	+	no	1	B4	plate_reader
+sample.WtK71	+	no	1	D9	plate_reader
+sample.EgX4d	+	yes	1	G6	plate_reader
+sample.zP7Kw	+	yes	1	H10	plate_reader
+sample.qBn50	+	no	1	A12	plate_reader
+sample.bN8eT	+	no	1	F12	plate_reader
+sample.kY2Rm	+	no	1	C1	plate_reader
+sample.mA7Xq	+	yes	1	E9	plate_reader
+sample.ZLw38	+	yes	1	H2	plate_reader
+sample.Ju5Kr	+	no	1	B1	plate_reader
+sample.aX6pV	+	no	1	D4	plate_reader
+sample.oCr97	+	no	1	A8	plate_reader
+sample.yM4Bn	+	yes	1	F7	plate_reader
+sample.nT59e	+	yes	1	C10	plate_reader
+sample.GW0kz	+	no	1	G2	plate_reader
+sample.DqP13	+	no	1	B11	plate_reader
+sample.iR2vL	+	no	1	E6	plate_reader
+sample.XYl79	+	yes	1	D6	plate_reader
+sample.el7CQ	+		1	H4	plate_reader
+sample.tcA38	+		1	G10	plate_reader
+Waterctrl.1738			1	H12	plate_reader
